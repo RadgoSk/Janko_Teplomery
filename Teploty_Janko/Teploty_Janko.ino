@@ -78,6 +78,7 @@ void loop()
     lcd.setCursor(0,1);
     lcd.print("Devices not found");
     };
+  //funkcia Janko
 }
 //.............................................................
 void ZobrazTeplotuVsetky()
