@@ -8,6 +8,8 @@
 #define OWIRE_PIN           8
 #define DS18B20_12_BIT_UNDF 0
 
+
+
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3,POSITIVE);
 OneWire OneWireBus(OWIRE_PIN);
 
