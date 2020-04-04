@@ -4,7 +4,6 @@
 #include <Wire.h>
 #include <OneWire.h>
 
-//Definicia konstant - v anglictine DEFINES[difajns]
 #define MAX_POCET_DS18B20   4
 #define OWIRE_PIN           8
 #define DS18B20_12_BIT_UNDF 0
@@ -12,33 +11,28 @@
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3,POSITIVE);
 OneWire OneWireBus(OWIRE_PIN);
 
-//vytvorenie vlastneho datoveho typu(nieco ako standardne INT alebo BYTE), my si vytvarame strukturu ktora obsahuje vsetky INFO o jednom teplomeri
+byte Teplomer_ID[MAX_POCET_DS18B20][8];
+byte Scratchpad[MAX_POCET_DS18B20][9];
+
 typedef struct {
   byte ID[8];
   byte ScratchPad[9];
   signed short Teplota_v_C;
   }DS18B20;
 
-//vytvorime si pole pre ulozenie informacii pre vsetky teplomery. Cize pole struktur (ukazoval som ti strukturu ulozenia dat v exceli)
 DS18B20 Teplomery[MAX_POCET_DS18B20];
 
-//premenna pre pocet najdenych teplomer, pre istotu jej na zaciatku priradime NULU, ale Ccko by malo vsetky premenne nulovat automaticky
 int PocetTeplomerov = 0;  // počet ID
 
-//deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlat a pouzitych lokalnych funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
-//Mohli by sme tu dat rovno DEFINICIE tych funkcii aj s telom ale takto je to prehladnejsie
- 
+//deklaracie lokalnych funkcii
+void MeranieTeplotyVsetky(void);
+void VypocitajTeplotu(void);
 void ZobrazTeplotuVsetky(void);
 void CitanieScratchPads(void);
-void MeranieTeplotyVsetky(void);
-void ProgressBar(void);
-void VypocitajTeplotu(void);
-
-//...........................................................................................................
-//.................................................SETUP.....................................................
-//...........................................................................................................
+//....................................................
 void setup() 
   {
+ // lcd.setBacklight(LOW); //nema efekt
   lcd.begin(20,4);
 
   lcd.setCursor(0,0);
@@ -55,7 +49,9 @@ void setup()
   //zistujeme pocet zariadeni na zbernici,
   //treba adekvatne upravit velkost pola Teplomery_ID
 
-   
+  int i = 0;  // počet riadkov 
+  int j = 0;  // počítadlo bajtov
+  
   // ak najde na zbernici ID inkrementuje  "PocetTeplomerov",inak opustí podmienku While 
   // (hodnota "PocetTeplomerov" sa rovná poctu "ID") 
   
@@ -64,9 +60,7 @@ void setup()
       PocetTeplomerov++;    
     }
   }
-//...........................................................................................................
-//###################################### HLAVNA SLUCKA (v Ccku funkcia MAIN)#################################
-//...........................................................................................................
+//....................................................
 void loop()
 {
   
@@ -83,10 +77,7 @@ void loop()
     lcd.print("Devices not found");
     };
 }
-
-//####################################################################################
-//#############################  DEFINICIE LOKALNYCH FUNKCII #########################
-//####################################################################################
+//.............................................................
 void ZobrazTeplotuVsetky()
 {
   int z,j;
@@ -103,10 +94,8 @@ lcd.clear();
     sprintf(riadok,"Teplomer %d:%s", z+1,cislo);
     lcd.print(riadok);
   }
-  //zmena
 }
-
-//####################################################################################
+//.........................................................
 void CitanieScratchPads(void)
 {
   int j,z;
@@ -125,7 +114,7 @@ void CitanieScratchPads(void)
     }
 }
 
-//####################################################################################
+//**************************************************************************  
 void MeranieTeplotyVsetky()       //  funkcia 
 {
   OneWireBus.reset();
@@ -138,15 +127,13 @@ void MeranieTeplotyVsetky()       //  funkcia
     }
       OneWireBus.reset();
 }
-
-//####################################################################################
-void ProgressBar(void)
+//****************************************************************************
+  void ProgressBar(void)
 {
   delay(70);
  // lcd.print((char)255);
 }
-
-//####################################################################################
+//****************************************************************************
 void VypocitajTeplotu(void)
 {
   unsigned int meas;   //desatinna cast
