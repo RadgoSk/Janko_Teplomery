@@ -70,18 +70,11 @@ void setup()
 void loop()
 {
   
-  if(PocetTeplomerov!=0){
     MeranieTeplotyVsetky();
     CitanieScratchPads();
     VypocitajTeplotu();
     ZobrazTeplotuVsetky();
     delay(2000);
-  }
-  else{
-    
-    lcd.setCursor(0,1);
-    lcd.print("Devices not found");
-    };
 }
 
 //####################################################################################
@@ -89,7 +82,7 @@ void loop()
 //####################################################################################
 void ZobrazTeplotuVsetky()
 {
-  int z,j;
+  int z;
   char riadok[20];
   char cislo[6];
   
@@ -182,7 +175,9 @@ void VypocitajTeplotu(void)
     {
         subzero = 1;    //priznak pre zaporne cislo
         meas = ~meas;   //0xffff; //convert to positive => complement++
-        meas++;         //2nd complement
+        
+        //ASI TOTO SPOSOBOVALO PROBLEM PRI MINUSIVEJ TEPLOTE
+        //meas++;         //2nd complement
     }
     else
     subzero = 0;
