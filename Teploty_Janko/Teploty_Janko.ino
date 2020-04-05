@@ -147,11 +147,6 @@ void VypocitajTeplotu(void)
   unsigned char subzero; //je cislo zaporne alebo kladne? ak 1 potom zaporne, ak 0 tak kladne
   int z;                 //premenna pouzita pri prehladavani jednotlivymi teplomermi
   
-  unsigned int hodnota_teplomera;
-  int v_help;
-  int desatina_pom;
-  float desatina;
-  int cele;
   int rounding[] = {
         0,
         1,              //0.0625*1 after rounding = 0.1
