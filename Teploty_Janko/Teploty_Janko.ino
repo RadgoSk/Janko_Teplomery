@@ -12,20 +12,24 @@
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3,POSITIVE);
 OneWire OneWireBus(OWIRE_PIN);
 
-//vytvorenie vlastneho datoveho typu(nieco ako standardne INT alebo BYTE), my si vytvarame strukturu ktora obsahuje vsetky INFO o jednom teplomeri
+//vytvorenie vlastneho datoveho typu(nieco ako standardne INT alebo BYTE)
+//, my si vytvarame strukturu ktora obsahuje vsetky INFO o jednom teplomeri
 typedef struct {
   byte ID[8];
   byte ScratchPad[9];
   signed short Teplota_v_C;
   }DS18B20;
 
-//vytvorime si pole pre ulozenie informacii pre vsetky teplomery. Cize pole struktur (ukazoval som ti strukturu ulozenia dat v exceli)
+//vytvorime si pole pre ulozenie informacii pre vsetky teplomery.
+//Cize pole struktur (ukazoval som ti strukturu ulozenia dat v exceli)
 DS18B20 Teplomery[MAX_POCET_DS18B20];
 
-//premenna pre pocet najdenych teplomer, pre istotu jej na zaciatku priradime NULU, ale Ccko by malo vsetky premenne nulovat automaticky
+//premenna pre pocet najdenych teplomer, pre istotu jej na zaciatku
+//priradime NULU, ale Ccko by malo vsetky premenne nulovat automaticky
 int PocetTeplomerov = 0;  // počet ID
 
-//deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlad o pouzitych lokalnych funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
+//deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlad o pouzitych lokalnych
+//funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
 //Mohli by sme tu dat rovno DEFINICIE tych funkcii aj s telom ale takto je to prehladnejsie
  
 void ZobrazTeplotuVsetky(void);
@@ -34,9 +38,9 @@ void MeranieTeplotyVsetky(void);
 void ProgressBar(void);
 void VypocitajTeplotu(void);
 
-//...........................................................................................................
-//.................................................SETUP.....................................................
-//...........................................................................................................
+//......................................................................................
+//.....................................SETUP............................................
+//......................................................................................
 void setup() 
   {
   lcd.begin(20,4);
@@ -56,17 +60,17 @@ void setup()
   //treba adekvatne upravit velkost pola Teplomery_ID
 
    
-  // ak najde na zbernici ID inkrementuje  "PocetTeplomerov",inak opustí podmienku While 
-  // (hodnota "PocetTeplomerov" sa rovná poctu "ID") 
+  // ak najde na zbernici ID inkrementuje  "PocetTeplomerov",inak opustí podmienku
+  // While (hodnota "PocetTeplomerov" sa rovná poctu "ID") 
   
   while(OneWireBus.search(Teplomery[PocetTeplomerov].ID))
     {
       PocetTeplomerov++;    
     }
   }
-//...........................................................................................................
-//###################################### HLAVNA SLUCKA (v Ccku funkcia MAIN)#################################
-//...........................................................................................................
+//......................................................................
+//############### HLAVNA SLUCKA (v Ccku funkcia MAIN)###################
+//......................................................................
 void loop()
 {
   
@@ -77,9 +81,9 @@ void loop()
     delay(2000);
 }
 
-//####################################################################################
-//#############################  DEFINICIE LOKALNYCH FUNKCII #########################
-//####################################################################################
+//#####################################################################
+//######################  DEFINICIE LOKALNYCH FUNKCII #################
+//#####################################################################
 void ZobrazTeplotuVsetky()
 {
   int z;
@@ -99,14 +103,14 @@ lcd.clear();
   //zmena
 }
 
-//####################################################################################
+//################################################################
 void CitanieScratchPads(void)
 {
   int j,z;
   for(z=0; z<PocetTeplomerov; z++)
     {
      OneWireBus.reset();
-     OneWireBus.write(0x55); //Komunikacia iba s jednym ROM ID, musi nasledovat 64 bitovy ROM kod
+     OneWireBus.write(0x55); //Komunik. iba s jednym ROM ID, musi nasl. 64 bit. ROM kod
      
      for(j=0; j<8; j++)
     {
@@ -118,11 +122,11 @@ void CitanieScratchPads(void)
     }
 }
 
-//####################################################################################
+//###########################################################################
 void MeranieTeplotyVsetky()       //  funkcia 
 {
   OneWireBus.reset();
-  OneWireBus.write(0xCC); //Skip ROM prikaz, pre "ovladanie" vsetkych zariadeni/teplomerov na zbernici
+  OneWireBus.write(0xCC); //Skip ROM prikaz, pre "ovl." vsetkych zar./teplomerov na zbernici
   OneWireBus.write(0x44); //meranie teploty
 
   for(int i=0;i<12;i++)
@@ -132,14 +136,14 @@ void MeranieTeplotyVsetky()       //  funkcia
       OneWireBus.reset();
 }
 
-//####################################################################################
+//##########################################################################
 void ProgressBar(void)
 {
   delay(70);
  // lcd.print((char)255);
 }
 
-//####################################################################################
+//###########################################################################
 void VypocitajTeplotu(void)
 {
   unsigned int meas;     //desatinna cast vypocitanej teploty
