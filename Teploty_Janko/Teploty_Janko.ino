@@ -60,8 +60,8 @@ void setup()
   //treba adekvatne upravit velkost pola Teplomery_ID
 
    
-  // ak najde na zbernici ID inkrementuje  "PocetTeplomerov",inak opustí podmienku
-  // While (hodnota "PocetTeplomerov" sa rovná poctu "ID") 
+  // ak najde na zbernici ID inkrementuje  "PocetTeplomerov",inak opustí
+  // podmienku While (hodnota "PocetTeplomerov" sa rovná poctu "ID") 
   
   while(OneWireBus.search(Teplomery[PocetTeplomerov].ID))
     {
@@ -126,7 +126,7 @@ void CitanieScratchPads(void)
 void MeranieTeplotyVsetky()       //  funkcia 
 {
   OneWireBus.reset();
-  OneWireBus.write(0xCC); //Skip ROM prikaz, pre "ovl." vsetkych zar./teplomerov na zbernici
+  OneWireBus.write(0xCC); //Skip ROM prikaz, pre ovl.všet.zar.(teplomerov na zbernici)
   OneWireBus.write(0x44); //meranie teploty
 
   for(int i=0;i<12;i++)
@@ -184,7 +184,7 @@ void VypocitajTeplotu(void)
     meas &= ~(DS18B20_12_BIT_UNDF);
    // do tohto momentu je v meas zdruzenych 2x 8 bitov LSB a MSB 
 
-    cel = 10 * ( (unsigned char)(meas >> 4) );  // ulozi celu cast nameranej teploty a vynasobi x 10
+    cel = 10 * ( (unsigned char)(meas >> 4) );  // ulozi celu cast zmer.teploty a vynasobi x 10
     meas = (unsigned char)(meas & 0x000F);  // get the fractional part
 
     meas = rounding[meas];
