@@ -27,19 +27,10 @@ DS18B20 Teplomery[MAX_POCET_DS18B20];
 //premenna pre pocet najdenych teplomer, pre istotu jej na zaciatku priradime NULU, ale Ccko by malo vsetky premenne nulovat automaticky
 int PocetTeplomerov = 0;  // počet ID
 
-<<<<<<< Updated upstream
-//deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlad o pouzitych lokalnych funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
-=======
 //SW timer premenne
 // 50ms timer
 unsigned char MeranieTeplomera_50ms = DS18B20_750ms; // max cas 50ms x 255 = 12750 ms
 unsigned char IntervalTeplomera_50ms = DS18B20_Interval_1S; //20 pre 1sekundu
-
-//deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlad o pouzitych lokalnych
-//funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
->>>>>>> Stashed changes
-//Mohli by sme tu dat rovno DEFINICIE tych funkcii aj s telom ale takto je to prehladnejsie
- 
 
 //...........................................................................................................
 //.................................................SETUP.....................................................
@@ -74,122 +65,13 @@ void setup()
       PocetTeplomerov++;    
     }
   }
-<<<<<<< Updated upstream
-//...........................................................................................................
-//###################################### HLAVNA SLUCKA (v Ccku funkcia MAIN)#################################
-//...........................................................................................................
-void loop()
-{
-  
-    MeranieTeplotyVsetky();
-    CitanieScratchPads();
-    VypocitajTeplotu();
-    ZobrazTeplotuVsetky();
-    delay(2000);
-}
-
-//####################################################################################
-//#############################  DEFINICIE LOKALNYCH FUNKCII #########################
-//####################################################################################
-void ZobrazTeplotuVsetky()
-{
-  int z;
-  char riadok[20];
-  char cislo[6];
-  
-lcd.clear();
-=======
 
 //......................................................................................
 //------------------------------ INTERUPT TIMERS ---------------------------------------
 //...................................................................................... 
->>>>>>> Stashed changes
-
-
-<<<<<<< Updated upstream
-//####################################################################################
-void CitanieScratchPads(void)
-{
-  int j,z;
-  for(z=0; z<PocetTeplomerov; z++)
-    {
-     OneWireBus.reset();
-     OneWireBus.write(0x55); //Komunikacia iba s jednym ROM ID, musi nasledovat 64 bitovy ROM kod
-     
-     for(j=0; j<8; j++)
-    {
-      OneWireBus.write(Teplomery[z].ID[j]);
-    }
-    
-    OneWireBus.write(0xBE);
-    for(j=0; j<9; j++) Teplomery[z].ScratchPad[j]=OneWireBus.read();
-    }
-}
-
-//####################################################################################
-void MeranieTeplotyVsetky()       //  funkcia 
-{
-  OneWireBus.reset();
-  OneWireBus.write(0xCC); //Skip ROM prikaz, pre "ovladanie" vsetkych zariadeni/teplomerov na zbernici
-  OneWireBus.write(0x44); //meranie teploty
-=======
 
 ISR(TIMER0_COMPA_vect){   //timer0 8bit
->>>>>>> Stashed changes
-
 }
-
-<<<<<<< Updated upstream
-//####################################################################################
-void ProgressBar(void)
-{
-  delay(70);
- // lcd.print((char)255);
-}
-
-//####################################################################################
-void VypocitajTeplotu(void)
-{
-  unsigned int meas;     //desatinna cast vypocitanej teploty
-  signed short cel;      //cela cast vypocitanej teploty 
-  unsigned char subzero; //je cislo zaporne alebo kladne? ak 1 potom zaporne, ak 0 tak kladne
-  int z;                 //premenna pouzita pri prehladavani jednotlivymi teplomermi
-  
-  unsigned int hodnota_teplomera;
-  int v_help;
-  int desatina_pom;
-  float desatina;
-  int cele;
-  int rounding[] = {
-        0,
-        1,              //0.0625*1 after rounding = 0.1
-        1,              //0.125 after rounding = 0.1
-        2,              //0.1875 after rounding = 0.2
-        3,              //0.25 after rounding = 0.
-        3,              //0.3125 after rounding = 0.3
-        4,              //0.375 after rounding = 0.4 ...
-        4, 5, 6, 6, 7, 8, 8, 9, 9
-    };
-
-   for(z=0; z<PocetTeplomerov; z++)
-   {
-
-   //conversion SP1 a SP2 to integer
-    meas = Teplomery[z].ScratchPad[0];
-    meas |= ((unsigned int)Teplomery[z].ScratchPad[1]) << 8;
-
-    //check for negative temperature
-    if( meas & 0x8000)
-    {
-        subzero = 1;    //priznak pre zaporne cislo
-        meas = ~meas;   //0xffff; //convert to positive => complement++
-        
-        //ASI TOTO SPOSOBOVALO PROBLEM PRI MINUSIVEJ TEPLOTE
-        //meas++;         //2nd complement
-=======
-
-// *********** TIMER1 premenne***************
-
 
 ISR(TIMER1_COMPA_vect){   //timer1 16bit interrupt 20Hz
   if(MeranieTeplomera_50ms > 0){
@@ -197,36 +79,18 @@ ISR(TIMER1_COMPA_vect){   //timer1 16bit interrupt 20Hz
     }
   if(IntervalTeplomera_50ms > 0){
     IntervalTeplomera_50ms--;
->>>>>>> Stashed changes
     }
-
 }
   
 ISR(TIMER2_COMPA_vect){   //timer 2 8bit
-
-<<<<<<< Updated upstream
-    cel = 10 * ( (unsigned char)(meas >> 4) );  // ulozi celu cast nameranej teploty a vynasobi x 10
-    meas = (unsigned char)(meas & 0x000F);  // get the fractional part
-=======
 }
->>>>>>> Stashed changes
+
 
 //......................................................................
 //############### HLAVNA SLUCKA (v Ccku funkcia MAIN)###################
 //......................................................................
 void loop()
 {
-
-<<<<<<< Updated upstream
-    if(subzero)
-        Teplomery[z].Teplota_v_C = -cel;     //multiply with 10 (-21.6 -> -216)
-    else
-        Teplomery[z].Teplota_v_C = cel;      //multiply with 10 (21.6 -> -216)
-
-    Teplomery[z].Teplota_v_C+=meas;
-    
-   }
-=======
     if(IntervalTeplomera_50ms == 0){
       MeranieTeplotyVsetky();
       
@@ -239,5 +103,5 @@ void loop()
       VypocitajTeplotu();
       ZobrazTeplotuVsetky();
     }
->>>>>>> Stashed changes
+
 }
