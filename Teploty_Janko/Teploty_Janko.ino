@@ -65,7 +65,9 @@ void setup()
   
   while(OneWireBus.search(Teplomery[PocetTeplomerov].ID))
     {
-      PocetTeplomerov++;    
+      PocetTeplomerov++;
+      if(PocetTeplomerov==MAX_POCET_DS18B20)
+        break;    
     }
   }
 //......................................................................
