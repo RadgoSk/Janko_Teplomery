@@ -8,6 +8,8 @@
 #define MAX_POCET_DS18B20   4
 #define OWIRE_PIN           8
 #define DS18B20_12_BIT_UNDF 0
+#define DS18B20_750ms       15  //15*50mstimer = 750ms
+#define DS18B20_Interval_1S 20
 
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3,POSITIVE);
 OneWire OneWireBus(OWIRE_PIN);
@@ -25,20 +27,28 @@ DS18B20 Teplomery[MAX_POCET_DS18B20];
 //premenna pre pocet najdenych teplomer, pre istotu jej na zaciatku priradime NULU, ale Ccko by malo vsetky premenne nulovat automaticky
 int PocetTeplomerov = 0;  // počet ID
 
+<<<<<<< Updated upstream
 //deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlad o pouzitych lokalnych funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
+=======
+//SW timer premenne
+// 50ms timer
+unsigned char MeranieTeplomera_50ms = DS18B20_750ms; // max cas 50ms x 255 = 12750 ms
+unsigned char IntervalTeplomera_50ms = DS18B20_Interval_1S; //20 pre 1sekundu
+
+//deklaracie lokalnych funkcii, kedze kompilator potebuje mat prehlad o pouzitych lokalnych
+//funkciach este pred funkciou MAIN(v arduino pred LOOP)musime mu to povedat.
+>>>>>>> Stashed changes
 //Mohli by sme tu dat rovno DEFINICIE tych funkcii aj s telom ale takto je to prehladnejsie
  
-void ZobrazTeplotuVsetky(void);
-void CitanieScratchPads(void);
-void MeranieTeplotyVsetky(void);
-void ProgressBar(void);
-void VypocitajTeplotu(void);
 
 //...........................................................................................................
 //.................................................SETUP.....................................................
 //...........................................................................................................
 void setup() 
   {
+  //nastavenie HW timerov
+  setup_InterruptTimers();
+  
   lcd.begin(20,4);
 
   lcd.setCursor(0,0);
@@ -64,6 +74,7 @@ void setup()
       PocetTeplomerov++;    
     }
   }
+<<<<<<< Updated upstream
 //...........................................................................................................
 //###################################### HLAVNA SLUCKA (v Ccku funkcia MAIN)#################################
 //...........................................................................................................
@@ -87,18 +98,15 @@ void ZobrazTeplotuVsetky()
   char cislo[6];
   
 lcd.clear();
+=======
 
-  for(z=0; z<PocetTeplomerov;z++)
-  {
-    dtostrf((float)Teplomery[z].Teplota_v_C/10,6,1,cislo);
-    
-    lcd.setCursor(0,z);
-    sprintf(riadok,"Teplomer %d:%s", z+1,cislo);
-    lcd.print(riadok);
-  }
-  //zmena
-}
+//......................................................................................
+//------------------------------ INTERUPT TIMERS ---------------------------------------
+//...................................................................................... 
+>>>>>>> Stashed changes
 
+
+<<<<<<< Updated upstream
 //####################################################################################
 void CitanieScratchPads(void)
 {
@@ -124,14 +132,14 @@ void MeranieTeplotyVsetky()       //  funkcia
   OneWireBus.reset();
   OneWireBus.write(0xCC); //Skip ROM prikaz, pre "ovladanie" vsetkych zariadeni/teplomerov na zbernici
   OneWireBus.write(0x44); //meranie teploty
+=======
 
-  for(int i=0;i<12;i++)
-    {
-    ProgressBar();
-    }
-      OneWireBus.reset();
+ISR(TIMER0_COMPA_vect){   //timer0 8bit
+>>>>>>> Stashed changes
+
 }
 
+<<<<<<< Updated upstream
 //####################################################################################
 void ProgressBar(void)
 {
@@ -178,18 +186,38 @@ void VypocitajTeplotu(void)
         
         //ASI TOTO SPOSOBOVALO PROBLEM PRI MINUSIVEJ TEPLOTE
         //meas++;         //2nd complement
+=======
+
+// *********** TIMER1 premenne***************
+
+
+ISR(TIMER1_COMPA_vect){   //timer1 16bit interrupt 20Hz
+  if(MeranieTeplomera_50ms > 0){
+    MeranieTeplomera_50ms--;
     }
-    else
-    subzero = 0;
+  if(IntervalTeplomera_50ms > 0){
+    IntervalTeplomera_50ms--;
+>>>>>>> Stashed changes
+    }
 
-    meas &= ~(DS18B20_12_BIT_UNDF);
-   // do tohto momentu je v meas zdruzenych 2x 8 bitov LSB a MSB 
+}
+  
+ISR(TIMER2_COMPA_vect){   //timer 2 8bit
 
+<<<<<<< Updated upstream
     cel = 10 * ( (unsigned char)(meas >> 4) );  // ulozi celu cast nameranej teploty a vynasobi x 10
     meas = (unsigned char)(meas & 0x000F);  // get the fractional part
+=======
+}
+>>>>>>> Stashed changes
 
-    meas = rounding[meas];
+//......................................................................
+//############### HLAVNA SLUCKA (v Ccku funkcia MAIN)###################
+//......................................................................
+void loop()
+{
 
+<<<<<<< Updated upstream
     if(subzero)
         Teplomery[z].Teplota_v_C = -cel;     //multiply with 10 (-21.6 -> -216)
     else
@@ -198,4 +226,18 @@ void VypocitajTeplotu(void)
     Teplomery[z].Teplota_v_C+=meas;
     
    }
+=======
+    if(IntervalTeplomera_50ms == 0){
+      MeranieTeplotyVsetky();
+      
+      IntervalTeplomera_50ms = DS18B20_Interval_1S;
+      MeranieTeplomera_50ms = DS18B20_750ms;
+      }
+    if(MeranieTeplomera_50ms == 0){
+      MeranieTeplomera_50ms = DS18B20_750ms;
+      CitanieScratchPads();
+      VypocitajTeplotu();
+      ZobrazTeplotuVsetky();
+    }
+>>>>>>> Stashed changes
 }
