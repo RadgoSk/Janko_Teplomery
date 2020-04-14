@@ -37,26 +37,10 @@ unsigned char IntervalTeplomera_50ms = DS18B20_Interval_1S; //20 pre 1sekundu
 //...........................................................................................................
 void setup() 
   {
-  //nastavenie HW timerov
-  setup_InterruptTimers();
+  ZobrazUvodnaObrazovka();
   
-  lcd.begin(20,4);
-
-  lcd.setCursor(0,0);
-  lcd.print("Trapenie Teplomery");
-  lcd.setCursor(0,1);
-  lcd.print("Shield 2020/1");
-  lcd.setCursor(0,2);
-  lcd.print("Verzia 1.01");
-  lcd.setCursor(0,3);
-  lcd.print("21.03.2020");
-  delay (2000);
-  lcd.clear();
-
   //zistujeme pocet zariadeni na zbernici,
   //treba adekvatne upravit velkost pola Teplomery_ID
-
-   
   // ak najde na zbernici ID inkrementuje  "PocetTeplomerov",inak opustí podmienku While 
   // (hodnota "PocetTeplomerov" sa rovná poctu "ID") 
   
@@ -64,6 +48,9 @@ void setup()
     {
       PocetTeplomerov++;    
     }
+
+  //nastavenie HW timerov
+  setup_InterruptTimers();
   }
 
 //......................................................................................

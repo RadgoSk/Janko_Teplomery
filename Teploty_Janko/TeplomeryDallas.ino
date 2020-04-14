@@ -1,23 +1,3 @@
-void ZobrazTeplotuVsetky()
-{
-  int z;
-  char riadok[20];
-  char cislo[6];
-  
-lcd.clear();
-
-  for(z=0; z<PocetTeplomerov;z++)
-  {
-    dtostrf((float)Teplomery[z].Teplota_v_C/10,6,1,cislo);
-    
-    lcd.setCursor(0,z);
-    sprintf(riadok,"Teplomer %d:%s", z+1,cislo);
-    lcd.print(riadok);
-  }
-  //zmena
-}
-
-//################################################################
 void CitanieScratchPads(void)
 {
   int j,z;
