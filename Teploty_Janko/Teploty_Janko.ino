@@ -191,12 +191,10 @@ void VypocitajTeplotu(void)
 
     meas = rounding[meas];
 
+    Teplomery[z].Teplota_v_C = meas + cel;
+    
     if(subzero)
-        Teplomery[z].Teplota_v_C = -cel;     //multiply with 10 (-21.6 -> -216)
-    else
-        Teplomery[z].Teplota_v_C = cel;      //multiply with 10 (21.6 -> -216)
-
-    Teplomery[z].Teplota_v_C+=meas;
+        Teplomery[z].Teplota_v_C *= -1;     //multiplied with 10 (-21.6 -> -216)
     
    }
 }
