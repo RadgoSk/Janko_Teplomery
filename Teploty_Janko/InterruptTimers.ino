@@ -26,9 +26,9 @@ cli();//stop interrupts
   // set compare match register for 20hz increments
   OCR1A = 3124; // = (16*10^6) / (1*256) - 1 (must be <65536)
   // turn on CTC mode
-  TCCR1B |= (1 << WGM12);
+  TCCR1B |= (1 << WGM12); 
   // CS12 bits for 256 prescaler
-  TCCR1B |= (1 << CS12);  
+  TCCR1B |= (1 << CS12);
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
 

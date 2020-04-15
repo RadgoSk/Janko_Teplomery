@@ -32,11 +32,13 @@ int PocetTeplomerov = 0;  // počet ID
 unsigned char MeranieTeplomera_50ms = DS18B20_750ms; // max cas 50ms x 255 = 12750 ms
 unsigned char IntervalTeplomera_50ms = DS18B20_Interval_1S; //20 pre 1sekundu
 
+
+
 //...........................................................................................................
 //.................................................SETUP.....................................................
 //...........................................................................................................
-void setup() 
-  {
+void setup(){
+    
   ZobrazUvodnaObrazovka();
   
   //zistujeme pocet zariadeni na zbernici,
@@ -51,6 +53,8 @@ void setup()
 
   //nastavenie HW timerov
   setup_InterruptTimers();
+
+  MeranieTeplotyVsetky();
   }
 
 //......................................................................................
@@ -61,9 +65,9 @@ ISR(TIMER0_COMPA_vect){   //timer0 8bit
 }
 
 ISR(TIMER1_COMPA_vect){   //timer1 16bit interrupt 20Hz
-  if(MeranieTeplomera_50ms > 0){
-    MeranieTeplomera_50ms--;
-    }
+//  if(MeranieTeplomera_50ms > 0){
+//    MeranieTeplomera_50ms--;
+//    }
   if(IntervalTeplomera_50ms > 0){
     IntervalTeplomera_50ms--;
     }
@@ -79,16 +83,12 @@ ISR(TIMER2_COMPA_vect){   //timer 2 8bit
 void loop()
 {
     if(IntervalTeplomera_50ms == 0){
-      MeranieTeplotyVsetky();
-      
       IntervalTeplomera_50ms = DS18B20_Interval_1S;
-      MeranieTeplomera_50ms = DS18B20_750ms;
-      }
-    if(MeranieTeplomera_50ms == 0){
-      MeranieTeplomera_50ms = DS18B20_750ms;
+      
       CitanieScratchPads();
       VypocitajTeplotu();
       ZobrazTeplotuVsetky();
+      MeranieTeplotyVsetky();
+      
     }
-
 }
